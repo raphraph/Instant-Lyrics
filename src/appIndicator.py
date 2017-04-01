@@ -11,48 +11,66 @@ from src.windows import LyricsWindow, PreferenceWindow
 from . import utils
 from src.settings import APPINDICATOR_ID, CONFIG_PATH
 
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+DBusGMainLoop(set_as_default=True)
 
 class AppIndicator():
-
     def __init__(self):
         signal.signal(signal.SIGINT, signal.SIG_DFL)
+        
+        bus = dbus.SessionBus()
+        
+        bus.add_signal_receiver(self.build_menu, path="/org/mpris/MediaPlayer2")
 
-        indicator = appindicator.Indicator.new(APPINDICATOR_ID, utils.get_icon_path(
-            '../icons/instant-lyrics-24.png'), appindicator.IndicatorCategory.SYSTEM_SERVICES)
-        indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
-        indicator.set_menu(self.build_menu())
-
+        self.indicator = appindicator.Indicator.new(APPINDICATOR_ID, utils.get_icon_path(
+'../icons/instant-lyrics-24.png'), appindicator.IndicatorCategory.SYSTEM_SERVICES)
+        self.indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
+        self.build_menu()
+        
         self.Config = utils.get_config()
+        
         Gtk.main()
 
-    def build_menu(self):
+    def list_apps(self):
+        apps = []
+        session_bus = dbus.SessionBus()
+        for service in session_bus.list_names():
+            if service[:22] == "org.mpris.MediaPlayer2":
+                apps.append(service[23:])
+
+        return apps
+
+    def build_menu(self, *args):
         menu = Gtk.Menu()
 
-        get_lyrics = Gtk.MenuItem('Get Lyrics')
-        get_lyrics.connect('activate', self.fetch_lyrics)
+        item_lyrics = Gtk.MenuItem('Custom Lyrics')
+        item_lyrics.connect('activate', self.fetch_lyrics)
+        menu.append(item_lyrics)
 
-        spotify_lyrics = Gtk.MenuItem('Spotify Lyrics')
-        spotify_lyrics.connect('activate', self.spotify_lyrics)
-
+        apps = self.list_apps()
+        for app in apps:
+            current = Gtk.MenuItem(app.capitalize()+" lyrics")
+            current.connect('activate', self.app_lyrics, app)
+            menu.insert(current, 1)
+        
         preferences = Gtk.MenuItem('Preferences')
         preferences.connect('activate', self.preferences)
+        menu.append(preferences)
 
         item_quit = Gtk.MenuItem('Quit')
         item_quit.connect('activate', self.quit)
-
-        menu.append(get_lyrics)
-        menu.append(spotify_lyrics)
-        menu.append(preferences)
         menu.append(item_quit)
+
         menu.show_all()
-        return menu
+        self.indicator.set_menu(menu)
 
     def fetch_lyrics(self, source):
         win = LyricsWindow("get", self)
 
-    def spotify_lyrics(self, source):
-        win = LyricsWindow("spotify", self)
-        thread = threading.Thread(target=win.get_spotify)
+    def app_lyrics(self, source, app):
+        win = LyricsWindow("app", self)
+        thread = threading.Thread(target=win.get_lyrics, args=(app,))
         thread.daemon = True
         thread.start()
 

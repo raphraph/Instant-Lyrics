@@ -55,7 +55,7 @@ class LyricsWindow(Gtk.Window):
         entry_hbox.set_property("margin", 10)
 
         self.input = Gtk.Entry()
-        self.input.set_text("song/artist")
+        self.input.set_placeholder_text("song/artist")
         self.input.connect("key-release-event", self.on_key_release)
         entry_hbox.pack_start(self.input, True, True, 0)
 
@@ -107,14 +107,14 @@ class LyricsWindow(Gtk.Window):
         thread.daemon = True
         thread.start()
 
-    def get_spotify_song_data(self):
+    def get_song_data(self, app):
         session_bus = dbus.SessionBus()
 
-        spotify_bus = session_bus.get_object(
-            "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
-        spotify_properties = dbus.Interface(
-            spotify_bus, "org.freedesktop.DBus.Properties")
-        metadata = spotify_properties.Get(
+        app_bus = session_bus.get_object(
+            "org.mpris.MediaPlayer2."+app, "/org/mpris/MediaPlayer2")
+        app_properties = dbus.Interface(
+            app_bus, "org.freedesktop.DBus.Properties")
+        metadata = app_properties.Get(
             "org.mpris.MediaPlayer2.Player", "Metadata")
 
         title = metadata['xesam:title'].encode(
@@ -123,17 +123,15 @@ class LyricsWindow(Gtk.Window):
             'utf-8').decode('utf-8').replace("&", "&amp;")
         return {'title': title, 'artist': artist}
 
-    def get_spotify(self):
-
+    def get_lyrics(self, app):
         try:
-            song_data = self.get_spotify_song_data()
+            song_data = self.get_song_data(app)
             song = song_data['title']
             artist = song_data['artist']
         except:
             self.title.set_markup("<big><b>Error</b></big>")
-            message = ("Could not get current spotify song\n"
-                       "Either spotify is not running or\n"
-                       "no song is playing on spotify.\n\n"
+            message = ("Could not get current "+app+" song\n"
+                       "no song is playing on "+app+".\n\n"
                        "Else, report an issue <a href=\"https://"
                        "github.com/bhrigu123/Instant-Lyrics\" "
                        "title=\"Repo url\">here</a>")
