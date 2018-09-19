@@ -1,48 +1,38 @@
-# Instant-Lyrics
-
-Instantly fetches the lyrics of the currently playing spotify song, or any song, and displays it on a window.
-
-A linux application with a very convinient GUI. Build with Python Gtk+3 (gi).
+<div align="center">
+<h1>Instant-Lyrics</h1>
+<h2>Instantly fetches the lyrics of the currently playing song and displays it on a window.</h2>
+<em>A linux application with a very convenient GUI. Built with Python 3 Gtk+3 (gi).</em></br></br>
+</div>
+</br>
 
 # Screenshot
 ![Screenshot](https://cloud.githubusercontent.com/assets/6123105/23824316/3fe58044-069a-11e7-804e-180ea4041002.jpeg)
 
-# Working
-### GIF
-![working](https://cloud.githubusercontent.com/assets/6123105/23824730/e0e0829e-06a1-11e7-8d57-3235c4266f2c.gif)
-
+# Working example
+![Working](https://cloud.githubusercontent.com/assets/6123105/23824730/e0e0829e-06a1-11e7-8d57-3235c4266f2c.gif)
 
 # Compatibility
-
-* Python 2/3
-
-* Linux
-
+- Python 3
+- Linux
 
 # Installation
 
-## From Source
+### system requirements (use `apt`, `pacman`, `dnf` ... your package manager):
+- python-gi (PyGObject)
+- python-dbus
+- AppIndicator3
 
-### Requirements
-
-* python-gi (PyGObject)
-
-* AppIndicator3
-
-* python-dbus
-
-* requests
-
-* beautifulsoup4
-
-* lxml
+### python requirements (use `pip2` or `pip3`):
+- requests
+- beautifulsoup4
+- lxml
 
 
 First, install the requirements:
 
 ### For Ubuntu/Debian based systems:
 
-``` sh
+``` bash
 sudo apt install python-gi python-dbus gir1.2-appindicator3-0.1 python-requests python-bs4 python-lxml
 ```
 
@@ -50,26 +40,23 @@ sudo apt install python-gi python-dbus gir1.2-appindicator3-0.1 python-requests 
 
 ### For Arch users
 
-``` sh
+``` bash
 sudo pacman -S python2-dbus python2-requests python2-lxml python2-beautifulsoup4 python2-gobject libappindicator-gtk3
 ```
 
 ### Fedora
 
-``` sh
+``` bash
 sudo dnf install dbus-python python-gobject libappindicator-gtk3 python2-requests python-beautifulsoup4 python2-lxml
 ```
 
-## Install from source
+Then, enter the commands:
 
-After you've installed the dependencies, open terminal and go to the directory where you want to install. Enter the commands:
-
-``` sh
+``` bash
 git clone https://github.com/bhrigu123/Instant-Lyrics.git
-
 cd Instant-Lyrics/
-
-python InstantLyrics.py
+python InstantLyrics.py  # `python InstantLyrics.py &` to keep it running in
+background
 ```
 
 The icon will appear in the system tray (indicator panel). You can start using the application from there.
@@ -79,9 +66,7 @@ The icon will appear in the system tray (indicator panel). You can start using t
 # Creating a launcher shortcut
 
 If you have installed from source, you can go to **Preferences** from the menu options, and click on the button `Create Desktop Entry`.
-
 You should be able to see the `Instant Lyrics` application shortcut in your launcher menu.
-
 You can also find several manual ways of doing so from the web.
 
 ![Launcher](https://cloud.githubusercontent.com/assets/6123105/23824317/4735e83e-069a-11e7-8b1e-2814632bb3aa.jpeg)
@@ -90,12 +75,10 @@ You can also find several manual ways of doing so from the web.
 # Contribution
 Create an issue to discuss the changes/modifications before sending a PR.
 
-======
-## Icon Credits
+# Icon Credits
 Icon made by [Freepik](http://www.freepik.com/) from www.flaticon.com
 
-======
-
+# License
 ## The MIT License
 > Copyright (c) 2017 Bhrigu Srivastava http://bhrigu.me
 
