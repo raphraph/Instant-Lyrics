@@ -1,16 +1,16 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
+# !/usr/bin/python3
+# coding: utf-8
 
-import gi
 import signal
 import threading
 
+import dbus
+import gi
+from dbus.mainloop.glib import DBusGMainLoop
+
+from src.settings import APPINDICATOR_ID
 from src.windows import LyricsWindow, PreferenceWindow
 from . import utils
-from src.settings import APPINDICATOR_ID
-
-import dbus
-from dbus.mainloop.glib import DBusGMainLoop
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
