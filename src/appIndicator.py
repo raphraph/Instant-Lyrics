@@ -10,6 +10,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 
 from src.settings import APPINDICATOR_ID
 from src.windows import LyricsWindow, PreferenceWindow
+from utils import get_default_icon_path
 from . import utils
 
 gi.require_version('Gtk', '3.0')
@@ -20,8 +21,17 @@ from gi.repository import Gtk
 
 
 DBusGMainLoop(set_as_default=True)
-ICON_PATH = '../icons/instant-lyrics-24.png'
-ICON_PATH = utils.get_icon_path(ICON_PATH)  # full path
+ICON_PATH = get_default_icon_path()  # full path
+
+
+def list_music_apps():
+    apps = []
+    session_bus = dbus.SessionBus()
+    for service in session_bus.list_names():
+        if service[:22] == "org.mpris.MediaPlayer2":
+            apps.append(service[23:])
+
+    return apps
 
 
 class AppIndicator:
@@ -42,16 +52,6 @@ class AppIndicator:
 
         Gtk.main()
 
-    @staticmethod
-    def list_apps():
-        apps = []
-        session_bus = dbus.SessionBus()
-        for service in session_bus.list_names():
-            if service[:22] == "org.mpris.MediaPlayer2":
-                apps.append(service[23:])
-
-        return apps
-
     def build_menu(self, *args):
         menu = Gtk.Menu()
 
@@ -59,8 +59,7 @@ class AppIndicator:
         item_lyrics.connect('activate', self.fetch_lyrics)
         menu.append(item_lyrics)
 
-        apps = self.list_apps()
-        for app in apps:
+        for app in list_music_apps():
             current = Gtk.MenuItem(app.capitalize() + " lyrics")
             current.connect('activate', self.app_lyrics, app)
             menu.insert(current, 1)

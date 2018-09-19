@@ -41,6 +41,10 @@ def get_icon_path(rel_path):
     return abs_path_to_resource
 
 
+def get_default_icon_path():
+    return get_icon_path('../icons/instant-lyrics-32.png')
+
+
 def create_desktop_entry():
     # path of scr folder
     src_path = os.path.dirname(os.path.realpath(__file__))

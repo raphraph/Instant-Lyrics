@@ -17,8 +17,7 @@ from . import utils
 class LyricsWindow(Gtk.Window):
     def __init__(self, type, app):
         Gtk.Window.__init__(self, title="Lyrics")
-        self.set_icon_from_file(
-            utils.get_icon_path('../icons/instant-lyrics-32.png'))
+        self.set_icon_from_file(utils.get_default_icon_path())
         self.set_border_width(20)
         self.set_default_size(
             int(app.Config.get('Main', 'window width')),
@@ -31,7 +30,8 @@ class LyricsWindow(Gtk.Window):
             int(app.Config.get('Main', 'window width')),
             int(app.Config.get('Main', 'window height')))
 
-        if (type == "get"):
+        if type == "get":
+            self.input = Gtk.Entry()
             entry_hbox = self.create_input_box()
             self.main_box.pack_start(entry_hbox, False, False, 10)
 
@@ -53,7 +53,6 @@ class LyricsWindow(Gtk.Window):
             orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
         entry_hbox.set_property("margin", 10)
 
-        self.input = Gtk.Entry()
         self.input.set_placeholder_text("song/artist")
         self.input.connect("key-release-event", self.on_key_release)
         entry_hbox.pack_start(self.input, True, True, 0)
