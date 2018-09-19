@@ -2,40 +2,48 @@
 # -*- coding: utf-8 -*-
 
 import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('AppIndicator3', '0.1')
-from gi.repository import AppIndicator3 as appindicator
-from gi.repository import Gtk
-
 import signal
 import threading
 
 from src.windows import LyricsWindow, PreferenceWindow
 from . import utils
-from src.settings import APPINDICATOR_ID, CONFIG_PATH
+from src.settings import APPINDICATOR_ID
 
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
-DBusGMainLoop(set_as_default=True)
 
-class AppIndicator():
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
+
+from gi.repository import AppIndicator3 as appindicator
+from gi.repository import Gtk
+
+
+DBusGMainLoop(set_as_default=True)
+ICON_PATH = '../icons/instant-lyrics-24.png'
+ICON_PATH = utils.get_icon_path(ICON_PATH)  # full path
+
+
+class AppIndicator:
     def __init__(self):
         signal.signal(signal.SIGINT, signal.SIG_DFL)
-        
+
         bus = dbus.SessionBus()
-        
+
         bus.add_signal_receiver(self.build_menu, path="/org/mpris/MediaPlayer2")
 
-        self.indicator = appindicator.Indicator.new(APPINDICATOR_ID, utils.get_icon_path(
-'../icons/instant-lyrics-24.png'), appindicator.IndicatorCategory.SYSTEM_SERVICES)
+        self.indicator = appindicator.Indicator.new(
+            APPINDICATOR_ID, ICON_PATH,
+            appindicator.IndicatorCategory.SYSTEM_SERVICES)
         self.indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
         self.build_menu()
-        
+
         self.Config = utils.get_config()
-        
+
         Gtk.main()
 
-    def list_apps(self):
+    @staticmethod
+    def list_apps():
         apps = []
         session_bus = dbus.SessionBus()
         for service in session_bus.list_names():
@@ -53,10 +61,10 @@ class AppIndicator():
 
         apps = self.list_apps()
         for app in apps:
-            current = Gtk.MenuItem(app.capitalize()+" lyrics")
+            current = Gtk.MenuItem(app.capitalize() + " lyrics")
             current.connect('activate', self.app_lyrics, app)
             menu.insert(current, 1)
-        
+
         preferences = Gtk.MenuItem('Preferences')
         preferences.connect('activate', self.preferences)
         menu.append(preferences)
@@ -70,15 +78,19 @@ class AppIndicator():
 
     def fetch_lyrics(self, source):
         win = LyricsWindow("get", self)
+        win.show_all()
 
     def app_lyrics(self, source, app):
         win = LyricsWindow("app", self)
+        win.show_all()
+
         thread = threading.Thread(target=win.get_lyrics, args=(app,))
         thread.daemon = True
         thread.start()
 
     def preferences(self, source):
         win = PreferenceWindow(self)
+        win.show_all()
 
     def quit(self, source):
         Gtk.main_quit()

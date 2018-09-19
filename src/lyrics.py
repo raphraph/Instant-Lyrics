@@ -3,7 +3,6 @@
 
 import requests
 from bs4 import BeautifulSoup
-import os
 
 try:
     from urllib.parse import quote_plus
@@ -12,23 +11,23 @@ except ImportError:
 
 
 def get_lyrics(song_name):
-
     song_name += ' metrolyrics'
     name = quote_plus(song_name)
-    hdr = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
-           'Accept-Encoding': 'gzip, deflate, br',
-           'DNT': '1',
-           'UPGRADE-INSECURE-REQUESTS': '1',
-           'Connection': 'keep-alive'}
+    hdr = {
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'UPGRADE-INSECURE-REQUESTS': '1',
+        'Connection': 'keep-alive'}
 
     url = 'https://www.google.com/search?q=' + name
 
     result = requests.get(url, headers=hdr).text
     link_start = result.find('http://www.metrolyrics.com')
 
-    if(link_start == -1):
-        return("Lyrics not found on Metrolyrics")
-        
+    if (link_start == -1):
+        return ("Lyrics not found on Metrolyrics")
+
     link_end = result.find('html', link_start + 1) + 4
     link = result[link_start:link_end]
 

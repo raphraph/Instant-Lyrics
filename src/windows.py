@@ -2,39 +2,35 @@
 # -*- coding: utf-8 -*-
 
 import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
-
 import dbus
 import threading
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
+
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk
 
 from src.lyrics import get_lyrics
 from src.settings import CONFIG_PATH
 from . import utils
 
-class LyricsWindow(Gtk.Window):
 
+class LyricsWindow(Gtk.Window):
     def __init__(self, type, app):
         Gtk.Window.__init__(self, title="Lyrics")
         self.set_icon_from_file(
-                    utils.get_icon_path('../icons/instant-lyrics-32.png'))
+            utils.get_icon_path('../icons/instant-lyrics-32.png'))
         self.set_border_width(20)
         self.set_default_size(
-                            int(app.Config.get('Main', 'window width')), 
-                            int(app.Config.get('Main', 'window height')))
+            int(app.Config.get('Main', 'window width')),
+            int(app.Config.get('Main', 'window height')))
         self.set_position(Gtk.WindowPosition.CENTER)
 
         self.main_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.main_box.set_size_request(
-                            int(app.Config.get('Main', 'window width')), 
-                            int(app.Config.get('Main', 'window height')))
+            int(app.Config.get('Main', 'window width')),
+            int(app.Config.get('Main', 'window height')))
 
-        if(type == "get"):
+        if (type == "get"):
             entry_hbox = self.create_input_box()
             self.main_box.pack_start(entry_hbox, False, False, 10)
 
@@ -46,7 +42,6 @@ class LyricsWindow(Gtk.Window):
         scrolled.add(self.main_box)
 
         self.add(scrolled)
-        self.show_all()
 
     def on_key_release(self, widget, ev, data=None):
         if ev.keyval == Gdk.KEY_Return:
@@ -86,8 +81,8 @@ class LyricsWindow(Gtk.Window):
         lyrics_vbox.pack_start(self.spinner, False, False, 5)
         lyrics_vbox.pack_start(self.lyrics, False, False, 5)
         lyrics_vbox.set_size_request(
-                        int(app.Config.get('Main', 'window width')), 
-                        int(app.Config.get('Main', 'window height')))
+            int(app.Config.get('Main', 'window width')),
+            int(app.Config.get('Main', 'window height')))
 
         return lyrics_vbox
 
@@ -114,7 +109,7 @@ class LyricsWindow(Gtk.Window):
         session_bus = dbus.SessionBus()
 
         app_bus = session_bus.get_object(
-            "org.mpris.MediaPlayer2."+app, "/org/mpris/MediaPlayer2")
+            "org.mpris.MediaPlayer2." + app, "/org/mpris/MediaPlayer2")
         app_properties = dbus.Interface(
             app_bus, "org.freedesktop.DBus.Properties")
         metadata = app_properties.Get(
@@ -133,11 +128,11 @@ class LyricsWindow(Gtk.Window):
             artist = song_data['artist']
         except:
             self.title.set_markup("<big><b>Error</b></big>")
-            message = ("Could not get current "+app+" song\n"
-                       "no song is playing on "+app+".\n\n"
-                       "Else, report an issue <a href=\"https://"
-                       "github.com/bhrigu123/Instant-Lyrics\" "
-                       "title=\"Repo url\">here</a>")
+            message = ("Could not get current " + app + " song\n"
+                                                        "no song is playing on " + app + ".\n\n"
+                                                                                         "Else, report an issue <a href=\"https://"
+                                                                                         "github.com/bhrigu123/Instant-Lyrics\" "
+                                                                                         "title=\"Repo url\">here</a>")
 
             self.lyrics.set_markup(message)
             return
@@ -147,13 +142,14 @@ class LyricsWindow(Gtk.Window):
 
         self.put_lyrics(song + " " + artist)
 
-class PreferenceWindow(Gtk.Window):
 
+class PreferenceWindow(Gtk.Window):
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Instant-Lyrics Prefenreces")
-        self.set_icon_from_file(utils.get_icon_path('../icons/instant-lyrics-32.png'))
+        self.set_icon_from_file(
+            utils.get_icon_path('../icons/instant-lyrics-32.png'))
         self.set_border_width(20)
-        #self.set_default_size(350, 550)
+        # self.set_default_size(350, 550)
         self.set_position(Gtk.WindowPosition.CENTER)
 
         self.main_box = Gtk.Box(
@@ -183,7 +179,6 @@ class PreferenceWindow(Gtk.Window):
         self.main_box.pack_start(self.message, True, True, 0)
 
         self.add(self.main_box)
-        self.show_all()
 
     def create_pref_box(self, app):
         listbox = Gtk.ListBox()
@@ -191,7 +186,7 @@ class PreferenceWindow(Gtk.Window):
 
         row = Gtk.ListBoxRow()
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
-        row.add(hbox) 
+        row.add(hbox)
         width = Gtk.Label("Lyrics window width", xalign=0)
         self.width_val = Gtk.Entry()
         self.width_val.set_text(app.Config.get('Main', 'window width'))
@@ -199,7 +194,7 @@ class PreferenceWindow(Gtk.Window):
 
         hbox.pack_start(width, True, True, 0)
         hbox.pack_start(self.width_val, False, True, 0)
-        
+
         listbox.add(row)
 
         row = Gtk.ListBoxRow()
@@ -210,10 +205,9 @@ class PreferenceWindow(Gtk.Window):
         self.height_val.set_text(app.Config.get('Main', 'window height'))
         self.height_val.connect("changed", self.entry_change)
 
-
         hbox.pack_start(height, True, True, 0)
         hbox.pack_start(self.height_val, False, True, 0)
-        
+
         listbox.add(row)
 
         """ TODO: autostart
@@ -235,7 +229,7 @@ class PreferenceWindow(Gtk.Window):
         
         listbox.add(row)
         """
-        
+
         return listbox
 
     def save_config(self, source, *arg):
@@ -246,17 +240,17 @@ class PreferenceWindow(Gtk.Window):
         new_width = self.width_val.get_text()
         new_height = self.height_val.get_text()
 
-        if(new_width.isdigit() and new_height.isdigit()):
+        if (new_width.isdigit() and new_height.isdigit()):
             app.Config.set('Main', "window width", new_width)
             app.Config.set('Main', "window height", new_height)
-            
+
             with open(CONFIG_PATH, 'w') as config_file:
                 app.Config.write(config_file)
 
             return
 
         msg = ("Invalid values of height and width\n"
-                "Please add valid positive integers")
+               "Please add valid positive integers")
 
         self.show_message(msg)
 
@@ -274,12 +268,12 @@ class PreferenceWindow(Gtk.Window):
 
     def create_desktop_entry(self, source):
         utils.create_desktop_entry()
-        msg = ("Desktop entry created. You can now start the\n" 
-                "application from your Applications Launcher.\n\n"
-                "<small>If you ever change the location "
-                "of the Instant-Lyrics\nfolder, you will "
-                "need to create the Desktop Entry\nfrom "
-                "here again.</small>")
+        msg = ("Desktop entry created. You can now start the\n"
+               "application from your Applications Launcher.\n\n"
+               "<small>If you ever change the location "
+               "of the Instant-Lyrics\nfolder, you will "
+               "need to create the Desktop Entry\nfrom "
+               "here again.</small>")
 
         self.show_message(msg)
 
