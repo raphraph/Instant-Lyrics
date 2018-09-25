@@ -14,7 +14,6 @@ HEADERS = {
     'UPGRADE-INSECURE-REQUESTS': '1',
     'Connection': 'keep-alive'
 }
-NOT_FOUND_MESSAGE = "Lyrics not found"
 
 
 def add_params_to_url(url, params):
@@ -87,7 +86,7 @@ def get_lyrics(query):
     link_start, result = DuckDuckGoMetrolyricsFetcher(query).get_lyrics()
 
     if link_start == -1:
-        return NOT_FOUND_MESSAGE
+        return None
 
     link_end = result.find('html', link_start + 1) + 4
     link = result[link_start:link_end]
@@ -105,7 +104,7 @@ def get_lyrics(query):
     final_lyrics = final_lyrics.replace('</p>', ' ')
     final_lyrics = final_lyrics.strip()
 
-    if len(final_lyrics) < 10:
-        return NOT_FOUND_MESSAGE
+    if len(final_lyrics) < 20:  # too little to be lyrcs => not found
+        return None
 
     return final_lyrics

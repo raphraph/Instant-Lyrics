@@ -48,6 +48,7 @@ class LyricsWindow(Gtk.Window):
         self.add(scrolled)
         self.current_song = ""
         self.current_artist = ""
+        self.current_lyrics = None
 
     def on_key_release(self, widget, ev, data=None):
         if ev.keyval == Gdk.KEY_Return:
@@ -95,8 +96,12 @@ class LyricsWindow(Gtk.Window):
         self.spinner.start()
 
         self.lyrics.set_text("")
-        lyrics = get_lyrics(query)
-        self.lyrics.set_text(lyrics)
+        self.current_lyrics = get_lyrics(query)
+
+        if self.current_lyrics is None:
+            self.lyrics.set_text("Lyrics not found")
+        else:
+            self.lyrics.set_text(self.current_lyrics)
 
         self.spinner.stop()
 
@@ -139,16 +144,24 @@ class LyricsWindow(Gtk.Window):
     def get_lyrics(self, app):
         while True:
             try:
+                previous_song = self.current_song
+                previous_artist = self.current_artist
                 self.fetch_song_data(app)
+
+                new_song = (previous_song != self.current_song) or (
+                    previous_artist != self.current_artist)
+
+                print(previous_song, "VS", self.current_song)
+
+                if new_song:  # no new song => return
+                    self.set_current_song_title()
+                    self.set_current_song_lyrics()
             except:
                 self.title.set_markup("<big><b>Error</b></big>")
                 message = get_general_error(app)
                 self.lyrics.set_markup(message)
-                return
 
-            self.set_current_song_title()
-            self.set_current_song_lyrics()
-            time.sleep(2)
+            time.sleep(5)
 
 
 class PreferenceWindow(Gtk.Window):
