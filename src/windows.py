@@ -7,12 +7,12 @@ import time
 import dbus
 import gi
 
+from lyrics.genius import GoogleGeniusFetcher
 from utils import get_general_error
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-from src.lyrics import get_lyrics
 from src.settings import CONFIG_PATH
 from . import utils
 
@@ -96,7 +96,7 @@ class LyricsWindow(Gtk.Window):
         self.spinner.start()
 
         self.lyrics.set_text("")
-        self.current_lyrics = get_lyrics(query)
+        self.current_lyrics = GoogleGeniusFetcher(query).get_lyrics()
 
         if self.current_lyrics is None:
             self.lyrics.set_text("Lyrics not found")

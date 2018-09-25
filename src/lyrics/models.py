@@ -16,10 +16,6 @@ HEADERS = {
 
 
 class LyricsFetcher:
-    """
-    Searches for song lyrics in local folder
-    """
-
     def __init__(self, query):
         self.query = query
 
