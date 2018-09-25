@@ -18,10 +18,14 @@ gi.require_version('AppIndicator3', '0.1')
 
 from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Gtk
-
+import os
 
 DBusGMainLoop(set_as_default=True)
 ICON_PATH = get_default_icon_path()  # full path
+LOCAL_LYRICS_PATH = os.path.join(
+    os.getenv("HOME"),
+    ".local", "Instant-Lyrics", "lyrics"
+)
 
 
 def list_music_apps():

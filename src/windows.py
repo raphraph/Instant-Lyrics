@@ -151,8 +151,6 @@ class LyricsWindow(Gtk.Window):
                 new_song = (previous_song != self.current_song) or (
                     previous_artist != self.current_artist)
 
-                print(previous_song, "VS", self.current_song)
-
                 if new_song:  # no new song => return
                     self.set_current_song_title()
                     self.set_current_song_lyrics()

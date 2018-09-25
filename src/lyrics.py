@@ -33,25 +33,57 @@ def add_params_to_url(url, params):
     return urlparse.urlunparse(url_parts)
 
 
-class MetrolyricsFetcher:
+class LyricsFetcher:
     """
-    Define abstract primitive operations that concrete subclasses define
-    to implement steps of an algorithm.
-    Implement a template method defining the skeleton of an algorithm.
-    The template method calls primitive operations as well as operations
-    defined in AbstractClass or those of other objects.
+    Searches for song lyrics in local folder
     """
 
     def __init__(self, query):
         self.query = query
 
+    @abc.abstractclassmethod
     def get_lyrics(self):
+        return None
+
+
+class InternetLyricsFetcher(LyricsFetcher):
+    """
+    Searches internet for song lyrics
+    """
+
+    def __init__(self, query, search_engine):
+        LyricsFetcher.__init__(self, query)
+        self.url = search_engine
+
+    def get_lyrics(self):
+        try:
+            link = self.get_lyrics_link()
+            r = requests.get(link, headers=HEADERS)
+            r.encoding = "utf-8"
+            result = r.text
+            return self._parse_result(result)
+        except:
+            return None
+
+    def get_lyrics_link(self):
         query = self._get_query(self.query)
         url = self._get_url(query)
         response = requests.get(url, headers=HEADERS)
         result = response.text
-        link_start = result.find('http://www.metrolyrics.com')
-        return link_start, result
+
+        link_start = result.find(self.url)
+        if link_start == -1:
+            return None
+
+        link_end = min(
+            result.find('\'', link_start + 1),
+            result.find('"', link_start + 1)
+        )
+        return result[link_start:link_end]
+
+    @abc.abstractclassmethod
+    def _parse_result(self, result):
+        pass
 
     @abc.abstractmethod
     def _get_query(self, query):
@@ -62,9 +94,86 @@ class MetrolyricsFetcher:
         pass
 
 
+class GeniusFetcher(InternetLyricsFetcher):
+    """
+    Define abstract primitive operations that concrete subclasses define
+    to implement steps of an algorithm.
+    Implement a template method defining the skeleton of an algorithm.
+    The template method calls primitive operations as well as operations
+    defined in AbstractClass or those of other objects.
+    """
+
+    def __init__(self, query):
+        InternetLyricsFetcher.__init__(
+            self, query, 'https://genius.com'
+        )
+
+    def _parse_result(self, result):
+        soup = BeautifulSoup(result, "lxml")
+        raw = soup.findAll("div", {"class": "lyrics"})[0]
+
+        parsed = raw.findAll("p")[0].text
+        # parsed = str.join(u'\n', map(str, parsed))
+
+        if len(parsed) < 20:  # too little to be lyrcs => not found
+            return None
+
+        return parsed
+
+
+class GoogleGeniusFetcher(GeniusFetcher):
+    def _get_query(self, query):
+        return 'site:genius.com ' + query  # search just genius
+
+    def _get_url(self, query):
+        return add_params_to_url("https://www.google.com/search", {
+            "q": query
+        })
+
+
+class DuckDuckGoGeniusFetcher(GeniusFetcher):
+    def _get_query(self, query):
+        return 'site:genius.com ' + query  # search just metrolyrics
+
+    def _get_url(self, query):
+        return add_params_to_url("https://duckduckgo.com/html", {
+            "q": query
+        })
+
+
+class MetrolyricsFetcher(InternetLyricsFetcher):
+    """
+    Define abstract primitive operations that concrete subclasses define
+    to implement steps of an algorithm.
+    Implement a template method defining the skeleton of an algorithm.
+    The template method calls primitive operations as well as operations
+    defined in AbstractClass or those of other objects.
+    """
+
+    def __init__(self, query):
+        InternetLyricsFetcher.__init__(
+            self, query, 'http://www.metrolyrics.com'
+        )
+
+    def _parse_result(self, result):
+        soup = BeautifulSoup(result, "lxml")
+        raw = (soup.findAll('p', attrs={'class': 'verse'}))
+
+        parsed = str.join(u'\n', map(str, raw))
+        parsed = parsed.replace('<p class="verse">', '\n')
+        parsed = parsed.replace('<br/>', ' ')
+        parsed = parsed.replace('</p>', ' ')
+        parsed = parsed.strip()
+
+        if len(parsed) < 20:  # too little to be lyrcs => not found
+            return None
+
+        return parsed
+
+
 class GoogleMetrolyricsFetcher(MetrolyricsFetcher):
     def _get_query(self, query):
-        return query + ' metrolyrics:'  # search just metrolyrics
+        return 'site:metrolyrics.com ' + query  # search just metrolyrics
 
     def _get_url(self, query):
         return add_params_to_url("https://www.google.com/search", {
@@ -83,28 +192,4 @@ class DuckDuckGoMetrolyricsFetcher(MetrolyricsFetcher):
 
 
 def get_lyrics(query):
-    link_start, result = DuckDuckGoMetrolyricsFetcher(query).get_lyrics()
-
-    if link_start == -1:
-        return None
-
-    link_end = result.find('html', link_start + 1) + 4
-    link = result[link_start:link_end]
-
-    r = requests.get(link, headers=HEADERS)
-    r.encoding = "utf-8"
-    lyrics_html = r.text
-
-    soup = BeautifulSoup(lyrics_html, "lxml")
-    raw_lyrics = (soup.findAll('p', attrs={'class': 'verse'}))
-    final_lyrics = str.join(u'\n', map(str, raw_lyrics))
-
-    final_lyrics = final_lyrics.replace('<p class="verse">', '\n')
-    final_lyrics = final_lyrics.replace('<br/>', ' ')
-    final_lyrics = final_lyrics.replace('</p>', ' ')
-    final_lyrics = final_lyrics.strip()
-
-    if len(final_lyrics) < 20:  # too little to be lyrcs => not found
-        return None
-
-    return final_lyrics
+    return GoogleMetrolyricsFetcher(query).get_lyrics()
