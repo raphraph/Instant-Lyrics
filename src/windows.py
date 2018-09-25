@@ -6,6 +6,8 @@ import threading
 import dbus
 import gi
 
+from utils import get_general_error
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
@@ -86,11 +88,11 @@ class LyricsWindow(Gtk.Window):
 
         return lyrics_vbox
 
-    def put_lyrics(self, song):
+    def put_lyrics(self, query):
         self.spinner.start()
 
         self.lyrics.set_text("")
-        lyrics = get_lyrics(song)
+        lyrics = get_lyrics(query)
         self.lyrics.set_text(lyrics)
 
         self.spinner.stop()
@@ -101,7 +103,7 @@ class LyricsWindow(Gtk.Window):
         self.title.set_markup(text)
 
         thread = threading.Thread(
-            target=self.put_lyrics, kwargs={'song': input})
+            target=self.put_lyrics, kwargs={'query': input})
         thread.daemon = True
         thread.start()
 
@@ -128,18 +130,12 @@ class LyricsWindow(Gtk.Window):
             artist = song_data['artist']
         except:
             self.title.set_markup("<big><b>Error</b></big>")
-            message = ("Could not get current " + app + " song\n"
-                                                        "no song is playing on " + app + ".\n\n"
-                                                                                         "Else, report an issue <a href=\"https://"
-                                                                                         "github.com/bhrigu123/Instant-Lyrics\" "
-                                                                                         "title=\"Repo url\">here</a>")
-
+            message = get_general_error(app)
             self.lyrics.set_markup(message)
             return
 
         title = "<b><big>" + song + "</big>\n" + artist + "</b>"
         self.title.set_markup(title)
-
         self.put_lyrics(song + " " + artist)
 
 

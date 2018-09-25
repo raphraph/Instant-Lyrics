@@ -1,14 +1,14 @@
 # !/usr/bin/python3
 # coding: utf-8
 
+import configparser
 import os
 
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
-
 from src.settings import CONFIG_PATH
+
+BUG_ISSUES_REPORT_ERROR = "If that's not the case, report an issue <a " \
+                          "href=\"https://github.com/sirfoga/Instant-Lyrics" \
+                          ">here</a> "
 
 
 def create_default_config():
@@ -45,11 +45,16 @@ def get_default_icon_path():
     return get_icon_path('../icons/instant-lyrics-32.png')
 
 
+def get_general_error(app):
+    out = "Could not get current " + app + " song"
+    out += "\nno song is playing on " + app
+    out += "\n\n" + BUG_ISSUES_REPORT_ERROR
+    return out
+
+
 def create_desktop_entry():
-    # path of scr folder
-    src_path = os.path.dirname(os.path.realpath(__file__))
-    # path of base folder
-    base_path = os.path.dirname(src_path)
+    src_path = os.path.dirname(os.path.realpath(__file__))  # path of scr folder
+    base_path = os.path.dirname(src_path)  # path of base folder
 
     entry = "[Desktop Entry]\n"
     v = "Version=1.0\n"
