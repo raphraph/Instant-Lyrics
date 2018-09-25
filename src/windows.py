@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import threading
+import time
 
 import dbus
 import gi
@@ -45,6 +46,8 @@ class LyricsWindow(Gtk.Window):
         scrolled.add(self.main_box)
 
         self.add(scrolled)
+        self.current_song = ""
+        self.current_artist = ""
 
     def on_key_release(self, widget, ev, data=None):
         if ev.keyval == Gdk.KEY_Return:
@@ -107,7 +110,7 @@ class LyricsWindow(Gtk.Window):
         thread.daemon = True
         thread.start()
 
-    def get_song_data(self, app):
+    def fetch_song_data(self, app):
         session_bus = dbus.SessionBus()
 
         app_bus = session_bus.get_object(
@@ -121,22 +124,31 @@ class LyricsWindow(Gtk.Window):
             'utf-8').decode('utf-8').replace("&", "&amp;")
         artist = metadata['xesam:artist'][0].encode(
             'utf-8').decode('utf-8').replace("&", "&amp;")
-        return {'title': title, 'artist': artist}
+
+        self.current_song = title
+        self.current_artist = artist
+
+    def set_current_song_title(self):
+        title = "<b><big>" + self.current_song + "</big>\n" + \
+                self.current_artist + "</b>"
+        self.title.set_markup(title)
+
+    def set_current_song_lyrics(self):
+        self.put_lyrics(self.current_song + " " + self.current_artist)
 
     def get_lyrics(self, app):
-        try:
-            song_data = self.get_song_data(app)
-            song = song_data['title']
-            artist = song_data['artist']
-        except:
-            self.title.set_markup("<big><b>Error</b></big>")
-            message = get_general_error(app)
-            self.lyrics.set_markup(message)
-            return
+        while True:
+            try:
+                self.fetch_song_data(app)
+            except:
+                self.title.set_markup("<big><b>Error</b></big>")
+                message = get_general_error(app)
+                self.lyrics.set_markup(message)
+                return
 
-        title = "<b><big>" + song + "</big>\n" + artist + "</b>"
-        self.title.set_markup(title)
-        self.put_lyrics(song + " " + artist)
+            self.set_current_song_title()
+            self.set_current_song_lyrics()
+            time.sleep(2)
 
 
 class PreferenceWindow(Gtk.Window):

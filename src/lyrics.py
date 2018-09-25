@@ -1,6 +1,7 @@
 # !/usr/bin/python3
 # coding: utf-8
 
+import abc
 import urllib.parse as urlparse
 from urllib.parse import urlencode
 
@@ -13,7 +14,7 @@ HEADERS = {
     'UPGRADE-INSECURE-REQUESTS': '1',
     'Connection': 'keep-alive'
 }
-BASE_URL = "https://www.google.com/search"
+NOT_FOUND_MESSAGE = "Lyrics not found"
 
 
 def add_params_to_url(url, params):
@@ -33,22 +34,60 @@ def add_params_to_url(url, params):
     return urlparse.urlunparse(url_parts)
 
 
-def get_metrolyrics_from_google(query):
-    query += ' metrolyrics:'  # search just metrolyrics
-    url = add_params_to_url(BASE_URL, {
-        "q": query
-    })
-    response = requests.get(url, headers=HEADERS)
-    result = response.text
-    link_start = result.find('http://www.metrolyrics.com')
-    return link_start, result
+class MetrolyricsFetcher:
+    """
+    Define abstract primitive operations that concrete subclasses define
+    to implement steps of an algorithm.
+    Implement a template method defining the skeleton of an algorithm.
+    The template method calls primitive operations as well as operations
+    defined in AbstractClass or those of other objects.
+    """
+
+    def __init__(self, query):
+        self.query = query
+
+    def get_lyrics(self):
+        query = self._get_query(self.query)
+        url = self._get_url(query)
+        response = requests.get(url, headers=HEADERS)
+        result = response.text
+        link_start = result.find('http://www.metrolyrics.com')
+        return link_start, result
+
+    @abc.abstractmethod
+    def _get_query(self, query):
+        pass
+
+    @abc.abstractmethod
+    def _get_url(self, query):
+        pass
+
+
+class GoogleMetrolyricsFetcher(MetrolyricsFetcher):
+    def _get_query(self, query):
+        return query + ' metrolyrics:'  # search just metrolyrics
+
+    def _get_url(self, query):
+        return add_params_to_url("https://www.google.com/search", {
+            "q": query
+        })
+
+
+class DuckDuckGoMetrolyricsFetcher(MetrolyricsFetcher):
+    def _get_query(self, query):
+        return 'site:metrolyrics.com ' + query  # search just metrolyrics
+
+    def _get_url(self, query):
+        return add_params_to_url("https://duckduckgo.com/html", {
+            "q": query
+        })
 
 
 def get_lyrics(query):
-    link_start, result = get_metrolyrics_from_google(query)
+    link_start, result = DuckDuckGoMetrolyricsFetcher(query).get_lyrics()
 
     if link_start == -1:
-        return "Lyrics not found"
+        return NOT_FOUND_MESSAGE
 
     link_end = result.find('html', link_start + 1) + 4
     link = result[link_start:link_end]
@@ -64,4 +103,9 @@ def get_lyrics(query):
     final_lyrics = final_lyrics.replace('<p class="verse">', '\n')
     final_lyrics = final_lyrics.replace('<br/>', ' ')
     final_lyrics = final_lyrics.replace('</p>', ' ')
+    final_lyrics = final_lyrics.strip()
+
+    if len(final_lyrics) < 10:
+        return NOT_FOUND_MESSAGE
+
     return final_lyrics
