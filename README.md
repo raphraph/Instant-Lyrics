@@ -36,18 +36,16 @@ First, install the requirements:
 sudo apt install python-gi python-dbus gir1.2-appindicator3-0.1 python-requests python-bs4 python-lxml
 ```
 
-(requests, lxml and bs4 can be install from `pip` also: `pip install requests lxml beautifiulsoup4`)
-
 ### For Arch users
 
 ``` bash
-sudo pacman -S python2-dbus python2-requests python2-lxml python2-beautifulsoup4 python2-gobject libappindicator-gtk3
+sudo pacman -S python3-dbus python3-requests python3-lxml python3-beautifulsoup4 python3-gobject libappindicator-gtk3
 ```
 
 ### Fedora
 
 ``` bash
-sudo dnf install dbus-python python-gobject libappindicator-gtk3 python2-requests python-beautifulsoup4 python2-lxml
+sudo dnf install dbus-python python-gobject libappindicator-gtk3 python3-requests python-beautifulsoup4 python3-lxml
 ```
 
 Then, enter the commands:
@@ -55,8 +53,8 @@ Then, enter the commands:
 ``` bash
 git clone https://github.com/bhrigu123/Instant-Lyrics.git
 cd Instant-Lyrics/
-python InstantLyrics.py  # `python InstantLyrics.py &` to keep it running in
-background
+pip3 install .# this installs requests, lxml and bs4
+instantlyrics  # `instantlyrics.py &` to keep it running in background
 ```
 
 The icon will appear in the system tray (indicator panel). You can start using the application from there.

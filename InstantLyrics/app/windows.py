@@ -164,7 +164,7 @@ class PreferenceWindow(Gtk.Window):
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Instant-Lyrics Prefenreces")
         self.set_icon_from_file(
-            utils.get_icon_path('../icons/instant-lyrics-32.png'))
+            utils.get_default_icon_path())
         self.set_border_width(20)
         # self.set_default_size(350, 550)
         self.set_position(Gtk.WindowPosition.CENTER)

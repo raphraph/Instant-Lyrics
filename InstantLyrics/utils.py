@@ -46,21 +46,22 @@ def get_default_icon_path():
     return get_icon_path('./icons/instant-lyrics-32.png')
 
 
-def create_desktop_entry():
-    src_path = os.path.dirname(os.path.realpath(__file__))  # path of scr folder
-    base_path = os.path.dirname(src_path)  # path of base folder
+def get_desktop_icon_path():
+    return get_icon_path('./icons/instant-lyrics-256.png')
 
+
+def create_desktop_entry():
     entry = "[Desktop Entry]\n"
     v = "Version=1.0\n"
     tp = "Type=Application\n"
     nm = "Name=Instant Lyrics\n"
-    ic = "Icon=" + base_path + "/icons/instant-lyrics-256.png\n"
-    ex = "Exec=python3 " + base_path + "/cmd.py\n"
+    ic = "Icon=" + get_desktop_icon_path() + "\n"
+    ex = "Exec=instantlyrics\n"
     cm = "Comment=Shows lyrics of songs instantly\n"
     tm = "Terminal=false\n"
 
-    entry_path = os.getenv(
-        "HOME") + "/.local/share/applications/instant-lyrics.desktop"
+    entry_path = os.getenv("HOME") + \
+                 "/.local/share/applications/Instant-Lyrics.desktop"
 
     with open(entry_path, 'w') as file:
         file.write(entry)
