@@ -3,7 +3,7 @@
 
 import os
 
-from lyrics.models import LyricsFetcher
+from InstantLyrics.lyrics.models import LyricsFetcher
 
 
 def get_local_lyrics_filename(query, folder):

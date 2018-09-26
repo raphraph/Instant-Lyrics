@@ -3,7 +3,7 @@
 
 from bs4 import BeautifulSoup
 
-from lyrics.models import InternetLyricsFetcher
+from InstantLyrics.lyrics.models import InternetLyricsFetcher
 
 
 class GeniusFetcher(InternetLyricsFetcher):

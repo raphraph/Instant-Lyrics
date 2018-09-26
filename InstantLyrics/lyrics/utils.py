@@ -3,10 +3,13 @@
 
 import os
 
-from lyrics.genius import LYRICS_FINDERS as GENIUS_FINDERS
-from lyrics.local import LocalLyricsFetcher, get_local_lyrics_filename
-from lyrics.lyricstranslate import LYRICS_FINDERS as LYRICSTRANSLATE_FINDERS
-from lyrics.metrolyrics import LYRICS_FINDERS as METROLYRICS_FINDERS
+from InstantLyrics.lyrics.genius import LYRICS_FINDERS as GENIUS_FINDERS
+from InstantLyrics.lyrics.local import LocalLyricsFetcher, \
+    get_local_lyrics_filename
+from InstantLyrics.lyrics.lyricstranslate import \
+    LYRICS_FINDERS as LYRICSTRANSLATE_FINDERS
+from InstantLyrics.lyrics.metrolyrics import \
+    LYRICS_FINDERS as METROLYRICS_FINDERS
 
 LOCAL_LYRICS_FOLDER = os.path.join(
     os.getenv("HOME"),

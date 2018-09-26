@@ -3,8 +3,15 @@
 
 """ Setups library and install dependencies """
 
+from glob import glob
+
 from setuptools import setup, find_packages
 
+DATA_FILES = [
+    (
+        'images', glob('icons/*')
+    ),
+]
 DESCRIPTION = \
     "Instant-Lyrics\n\n\
     Instantly fetches the lyrics of the currently playing song and displays it on a window.\n\
@@ -27,6 +34,9 @@ setup(
     keywords="linux-app gtk3 pygobject lyrics spotify rhythmbox",
     url="https://github.com/sirfoga/Instant-Lyrics",
     packages=find_packages(),
+    package_data={'': ['icons/*']},
+    data_files=DATA_FILES,
+    include_package_data=True,
     install_requires=[
         "requests",
         "beautifulsoup4",
@@ -34,7 +44,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "instantlyrics = InstantLyrics.InstantLyrics:main"
+            "instantlyrics = InstantLyrics.cmd:main"
         ]
     }
 )

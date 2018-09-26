@@ -1,7 +1,7 @@
 # !/usr/bin/python3
 # coding: utf-8
 
-from app.appIndicator import AppIndicator
+from InstantLyrics.app.appIndicator import AppIndicator
 
 
 def main():

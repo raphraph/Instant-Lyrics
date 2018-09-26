@@ -15,8 +15,8 @@ from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Gtk
 import os
 
-from app.settings import APPINDICATOR_ID
-from app.windows import LyricsWindow, PreferenceWindow
+from InstantLyrics.app.settings import APPINDICATOR_ID
+from InstantLyrics.app.windows import LyricsWindow, PreferenceWindow
 from InstantLyrics import utils
 
 

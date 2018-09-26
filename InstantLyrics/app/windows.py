@@ -10,7 +10,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-from app.settings import CONFIG_PATH
+from InstantLyrics.app.settings import CONFIG_PATH
 from InstantLyrics.lyrics.utils import get_lyrics
 from InstantLyrics import utils
 
