@@ -3,10 +3,10 @@
 
 from bs4 import BeautifulSoup
 
-from .models import InternetLyricsFetcher
+from lyrics.models import InternetLyricsFetcher
 
 
-class MetrolyricsFetcher(InternetLyricsFetcher):
+class LyricsTranslateFetcher(InternetLyricsFetcher):
     """
     Define abstract primitive operations that concrete subclasses define
     to implement steps of an algorithm.
@@ -17,30 +17,27 @@ class MetrolyricsFetcher(InternetLyricsFetcher):
 
     def __init__(self):
         InternetLyricsFetcher.__init__(
-            self, 'http://www.metrolyrics.com'
+            self, 'https://lyricstranslate.com/en/'
         )
 
     def _parse_result(self, result):
         soup = BeautifulSoup(result, "lxml")
-        raw = (soup.findAll('p', attrs={'class': 'verse'}))
+        raw = soup.findAll("div", {"class": "ltf"})[0]
 
-        parsed = str.join(u'\n', map(str, raw))
-        parsed = parsed.replace('<p class="verse">', '\n')
-        parsed = parsed.replace('<br/>', ' ')
-        parsed = parsed.replace('</p>', ' ')
-        parsed = parsed.strip()
+        parsed = raw.findAll("p")[0].text
+        parsed = str.join(u'\n', map(str, parsed))
 
-        if len(parsed) < 20:  # too little to be lyrcs => not found
+        if len(parsed) < 20:  # too little to be lyrics => not found
             return None
 
         return parsed
 
 
-class GoogleMetrolyricsFetcher(MetrolyricsFetcher):
+class GoogleLyricstranslateFetcher(LyricsTranslateFetcher):
     def _get_query(self, query):
-        print("Searching Google for Metrolyrics lyrics")
+        print("Searching google.com for lyricstranslate.com lyrics")
 
-        return 'site:metrolyrics.com ' + query  # search just metrolyrics
+        return 'site:lyricstranslate.com ' + query  # search just genius
 
     def _get_url(self, query):
         return self.add_params_to_url("https://www.google.com/search", {
@@ -48,11 +45,11 @@ class GoogleMetrolyricsFetcher(MetrolyricsFetcher):
         })
 
 
-class DuckDuckGoMetrolyricsFetcher(MetrolyricsFetcher):
+class DuckDuckGoLyricstranslateFetcher(LyricsTranslateFetcher):
     def _get_query(self, query):
-        print("Searching DuckDuckGo for Metrolyrics lyrics")
+        print("Searching duckduckgo.com for lyricstranslate.com lyrics")
 
-        return 'site:metrolyrics.com ' + query  # search just metrolyrics
+        return 'site:lyricstranslate.com ' + query  # search just metrolyrics
 
     def _get_url(self, query):
         return self.add_params_to_url("https://duckduckgo.com/html", {
@@ -61,6 +58,6 @@ class DuckDuckGoMetrolyricsFetcher(MetrolyricsFetcher):
 
 
 LYRICS_FINDERS = [
-    GoogleMetrolyricsFetcher(),
-    DuckDuckGoMetrolyricsFetcher()
+    GoogleLyricstranslateFetcher(),
+    DuckDuckGoLyricstranslateFetcher()
 ]

@@ -4,7 +4,7 @@
 import configparser
 import os
 
-from src.settings import CONFIG_PATH
+from app.settings import CONFIG_PATH
 
 BUG_ISSUES_REPORT_ERROR = "If that's not the case, report an issue <a " \
                           "href=\"https://github.com/sirfoga/Instant-Lyrics" \
@@ -55,7 +55,7 @@ def create_desktop_entry():
     tp = "Type=Application\n"
     nm = "Name=Instant Lyrics\n"
     ic = "Icon=" + base_path + "/icons/instant-lyrics-256.png\n"
-    ex = "Exec=python2 " + base_path + "/InstantLyrics.py\n"
+    ex = "Exec=python3 " + base_path + "/cmd.py\n"
     cm = "Comment=Shows lyrics of songs instantly\n"
     tm = "Terminal=false\n"
 

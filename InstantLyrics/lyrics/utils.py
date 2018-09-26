@@ -4,8 +4,8 @@
 import os
 
 from lyrics.genius import LYRICS_FINDERS as GENIUS_FINDERS
+from lyrics.local import LocalLyricsFetcher, get_local_lyrics_filename
 from lyrics.metrolyrics import LYRICS_FINDERS as METROLYRICS_FINDERS
-from .local import LocalLyricsFetcher, get_local_lyrics_filename
 
 LOCAL_LYRICS_FOLDER = os.path.join(
     os.getenv("HOME"),

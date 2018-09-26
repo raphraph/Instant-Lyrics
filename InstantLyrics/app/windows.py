@@ -7,14 +7,12 @@ import time
 import dbus
 import gi
 
-from lyrics.utils import get_lyrics
-from utils import ERROR
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-from src.settings import CONFIG_PATH
-from . import utils
+from app.settings import CONFIG_PATH
+from InstantLyrics.lyrics.utils import get_lyrics
+from InstantLyrics import utils
 
 
 class LyricsWindow(Gtk.Window):
@@ -157,7 +155,7 @@ class LyricsWindow(Gtk.Window):
                     self.set_current_song_title()
                     self.set_current_song_lyrics()
             except:
-                self.title.set_markup(ERROR)
+                self.title.set_markup(utils.ERROR)
 
             time.sleep(5)
 

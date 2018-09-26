@@ -8,11 +8,6 @@ import dbus
 import gi
 from dbus.mainloop.glib import DBusGMainLoop
 
-from src.settings import APPINDICATOR_ID
-from src.windows import LyricsWindow, PreferenceWindow
-from utils import get_default_icon_path
-from . import utils
-
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 
@@ -20,8 +15,13 @@ from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Gtk
 import os
 
+from app.settings import APPINDICATOR_ID
+from app.windows import LyricsWindow, PreferenceWindow
+from InstantLyrics import utils
+
+
 DBusGMainLoop(set_as_default=True)
-ICON_PATH = get_default_icon_path()  # full path
+ICON_PATH = utils.get_default_icon_path()  # full path
 LOCAL_LYRICS_PATH = os.path.join(
     os.getenv("HOME"),
     ".local", "Instant-Lyrics", "lyrics"

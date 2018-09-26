@@ -1,11 +1,11 @@
 # !/usr/bin/python3
 # coding: utf-8
 
-from .src.appIndicator import AppIndicator
+from app.appIndicator import AppIndicator
 
 
 def main():
-    app = AppIndicator()
+    AppIndicator()
 
 
 if __name__ == "__main__":

@@ -26,7 +26,7 @@ setup(
     long_description=DESCRIPTION,
     keywords="linux-app gtk3 pygobject lyrics spotify rhythmbox",
     url="https://github.com/sirfoga/Instant-Lyrics",
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(),
     install_requires=[
         "requests",
         "beautifulsoup4",
@@ -34,7 +34,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "instantlyrics = InstantLyrics:main"
+            "instantlyrics = InstantLyrics.InstantLyrics:main"
         ]
     }
 )
