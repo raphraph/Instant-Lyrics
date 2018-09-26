@@ -17,19 +17,13 @@ class LyricsTranslateFetcher(InternetLyricsFetcher):
 
     def __init__(self):
         InternetLyricsFetcher.__init__(
-            self, 'https://lyricstranslate.com/en/'
+            self, 'https://lyricstranslate.com/'
         )
 
     def _parse_result(self, result):
         soup = BeautifulSoup(result, "lxml")
         raw = soup.findAll("div", {"class": "ltf"})[0]
-
-        parsed = raw.findAll("p")[0].text
-        parsed = str.join(u'\n', map(str, parsed))
-
-        if len(parsed) < 20:  # too little to be lyrics => not found
-            return None
-
+        parsed = raw.text
         return parsed
 
 

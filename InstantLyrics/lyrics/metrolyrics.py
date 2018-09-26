@@ -23,15 +23,10 @@ class MetrolyricsFetcher(InternetLyricsFetcher):
     def _parse_result(self, result):
         soup = BeautifulSoup(result, "lxml")
         raw = (soup.findAll('p', attrs={'class': 'verse'}))
-
-        parsed = str.join(u'\n', map(str, raw))
-        parsed = parsed.replace('<p class="verse">', '\n')
+        parsed = raw.replace('<p class="verse">', '\n')
         parsed = parsed.replace('<br/>', ' ')
         parsed = parsed.replace('</p>', ' ')
         parsed = parsed.strip()
-
-        if len(parsed) < 20:  # too little to be lyrcs => not found
-            return None
 
         return parsed
 

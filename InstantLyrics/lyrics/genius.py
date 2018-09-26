@@ -23,13 +23,7 @@ class GeniusFetcher(InternetLyricsFetcher):
     def _parse_result(self, result):
         soup = BeautifulSoup(result, "lxml")
         raw = soup.findAll("div", {"class": "lyrics"})[0]
-
         parsed = raw.findAll("p")[0].text
-        parsed = str.join(u'\n', map(str, parsed))
-
-        if len(parsed) < 20:  # too little to be lyrcs => not found
-            return None
-
         return parsed
 
 

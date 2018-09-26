@@ -36,7 +36,12 @@ class InternetLyricsFetcher(LyricsFetcher):
             r = requests.get(link, headers=HEADERS)
             r.encoding = "utf-8"
             result = r.text
-            return self._parse_result(result)
+            parsed = self._parse_result(result)
+
+            if len(parsed) < 20:  # too little to be lyrics
+                return None
+
+            return parsed
         except:
             return None
 

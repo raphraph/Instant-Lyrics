@@ -5,6 +5,7 @@ import os
 
 from lyrics.genius import LYRICS_FINDERS as GENIUS_FINDERS
 from lyrics.local import LocalLyricsFetcher, get_local_lyrics_filename
+from lyrics.lyricstranslate import LYRICS_FINDERS as LYRICSTRANSLATE_FINDERS
 from lyrics.metrolyrics import LYRICS_FINDERS as METROLYRICS_FINDERS
 
 LOCAL_LYRICS_FOLDER = os.path.join(
@@ -28,7 +29,7 @@ def save_lyrics(query, lyrics):
 def get_lyrics(query):
     finders = [
                   LocalLyricsFetcher(LOCAL_LYRICS_FOLDER)  # local
-              ] + GENIUS_FINDERS + METROLYRICS_FINDERS  # internet
+              ] + GENIUS_FINDERS + METROLYRICS_FINDERS + LYRICSTRANSLATE_FINDERS
 
     for finder in finders:
         result = finder.get_lyrics(query)
