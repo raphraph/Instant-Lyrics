@@ -35,6 +35,8 @@ class GeniusFetcher(InternetLyricsFetcher):
 
 class GoogleGeniusFetcher(GeniusFetcher):
     def _get_query(self, query):
+        print("Searching Google for Genius lyrics")
+
         return 'site:genius.com ' + query  # search just genius
 
     def _get_url(self, query):
@@ -45,6 +47,8 @@ class GoogleGeniusFetcher(GeniusFetcher):
 
 class DuckDuckGoGeniusFetcher(GeniusFetcher):
     def _get_query(self, query):
+        print("Searching DuckDuckGo for Genius lyrics")
+
         return 'site:genius.com ' + query  # search just metrolyrics
 
     def _get_url(self, query):

@@ -8,12 +8,12 @@ import dbus
 import gi
 
 from lyrics.utils import get_lyrics
+from utils import ERROR
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 from src.settings import CONFIG_PATH
-from .utils import get_general_error
 from . import utils
 
 
@@ -151,13 +151,13 @@ class LyricsWindow(Gtk.Window):
                 new_song = (previous_song != self.current_song) or (
                     previous_artist != self.current_artist)
 
-                if new_song:  # no new song => return
+                if new_song:
+                    print("New song detected:")
+                    print("\t", self.current_song + " " + self.current_artist)
                     self.set_current_song_title()
                     self.set_current_song_lyrics()
             except:
-                self.title.set_markup("<big><b>Error</b></big>")
-                message = get_general_error(app)
-                self.lyrics.set_markup(message)
+                self.title.set_markup(ERROR)
 
             time.sleep(5)
 

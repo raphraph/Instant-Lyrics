@@ -38,6 +38,8 @@ class MetrolyricsFetcher(InternetLyricsFetcher):
 
 class GoogleMetrolyricsFetcher(MetrolyricsFetcher):
     def _get_query(self, query):
+        print("Searching Google for Metrolyrics lyrics")
+
         return 'site:metrolyrics.com ' + query  # search just metrolyrics
 
     def _get_url(self, query):
@@ -48,6 +50,8 @@ class GoogleMetrolyricsFetcher(MetrolyricsFetcher):
 
 class DuckDuckGoMetrolyricsFetcher(MetrolyricsFetcher):
     def _get_query(self, query):
+        print("Searching DuckDuckGo for Metrolyrics lyrics")
+
         return 'site:metrolyrics.com ' + query  # search just metrolyrics
 
     def _get_url(self, query):

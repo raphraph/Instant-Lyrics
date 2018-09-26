@@ -9,6 +9,7 @@ from src.settings import CONFIG_PATH
 BUG_ISSUES_REPORT_ERROR = "If that's not the case, report an issue <a " \
                           "href=\"https://github.com/sirfoga/Instant-Lyrics" \
                           ">here</a> "
+ERROR = "<big><b>Error</b></big>"
 
 
 def create_default_config():
@@ -43,13 +44,6 @@ def get_icon_path(rel_path):
 
 def get_default_icon_path():
     return get_icon_path('../icons/instant-lyrics-32.png')
-
-
-def get_general_error(app):
-    out = "Could not get current " + app + " song"
-    out += "\nno song is playing on " + app
-    out += "\n\n" + BUG_ISSUES_REPORT_ERROR
-    return out
 
 
 def create_desktop_entry():
