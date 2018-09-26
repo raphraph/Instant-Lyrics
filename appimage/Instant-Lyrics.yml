@@ -1,0 +1,20 @@
+app: instantlyrics
+binpatch: true
+
+ingredients:
+  dist: trusty
+  sources: 
+    - deb http://archive.ubuntu.com/ubuntu/ trusty main universe
+  packages:
+    - python-gi
+    - python-dbus
+    - gir1.2-appindicator3-0.1
+    - python-requests
+    - python-bs4
+    - python-lxml
+  script:
+    - wget -c https://github.com/sirfoga/Instant-Lyrics/archive/master.zip
+    - unzip master.zip
+
+script:
+  - pip3 install .
