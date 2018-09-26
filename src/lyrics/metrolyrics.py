@@ -15,9 +15,9 @@ class MetrolyricsFetcher(InternetLyricsFetcher):
     defined in AbstractClass or those of other objects.
     """
 
-    def __init__(self, query):
+    def __init__(self):
         InternetLyricsFetcher.__init__(
-            self, query, 'http://www.metrolyrics.com'
+            self, 'http://www.metrolyrics.com'
         )
 
     def _parse_result(self, result):
@@ -54,3 +54,9 @@ class DuckDuckGoMetrolyricsFetcher(MetrolyricsFetcher):
         return self.add_params_to_url("https://duckduckgo.com/html", {
             "q": query
         })
+
+
+LYRICS_FINDERS = [
+    GoogleMetrolyricsFetcher(),
+    DuckDuckGoMetrolyricsFetcher()
+]

@@ -16,11 +16,11 @@ HEADERS = {
 
 
 class LyricsFetcher:
-    def __init__(self, query):
-        self.query = query
+    def __init__(self):
+        self.query = None
 
     @abc.abstractclassmethod
-    def get_lyrics(self):
+    def get_lyrics(self, query):
         return None
 
 
@@ -29,11 +29,13 @@ class InternetLyricsFetcher(LyricsFetcher):
     Searches internet for song lyrics
     """
 
-    def __init__(self, query, search_engine):
-        LyricsFetcher.__init__(self, query)
+    def __init__(self, search_engine):
+        LyricsFetcher.__init__(self)
         self.url = search_engine
 
-    def get_lyrics(self):
+    def get_lyrics(self, query):
+        self.query = query
+
         try:
             link = self.get_lyrics_link()
             r = requests.get(link, headers=HEADERS)
