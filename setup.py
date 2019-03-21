@@ -24,7 +24,7 @@ DESCRIPTION = \
 
 setup(
     name="Instant-Lyrics",
-    version="2.0",
+    version="2.0.1",
     author="sirfoga",
     author_email='captain.bhrigu@gmail.com,nicolas.guichard@ensimag.fr,'
                  'sirfoga@protonmail.com',
