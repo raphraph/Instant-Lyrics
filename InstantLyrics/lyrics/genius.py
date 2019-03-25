@@ -24,6 +24,8 @@ class GeniusFetcher(InternetLyricsFetcher):
         soup = BeautifulSoup(result, "lxml")
         raw = soup.findAll("div", {"class": "lyrics"})[0]
         parsed = raw.findAll("p")[0].text
+        if len(parsed) == 0:
+            parsed = raw.findAll("p")[1].text
         return parsed
 
 
