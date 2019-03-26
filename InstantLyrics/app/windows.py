@@ -47,6 +47,7 @@ class LyricsWindow(Gtk.Window):
         self.current_song = ""
         self.current_artist = ""
         self.current_lyrics = None
+        self.source = None
 
     def on_key_release(self, widget, ev, data=None):
         if ev.keyval == Gdk.KEY_Return:
@@ -94,12 +95,15 @@ class LyricsWindow(Gtk.Window):
         self.spinner.start()
 
         self.lyrics.set_text("")
-        self.current_lyrics = get_lyrics(query)
+        try:
+            self.current_lyrics, self.source = get_lyrics(query)
+        except:
+            self.current_lyrics = get_lyrics(query)
 
         if self.current_lyrics is None:
             self.lyrics.set_text("Lyrics not found")
         else:
-            self.lyrics.set_text(self.current_lyrics)
+            self.lyrics.set_text("From : "+self.source+"\n--\n"+self.current_lyrics)
 
         self.spinner.stop()
 

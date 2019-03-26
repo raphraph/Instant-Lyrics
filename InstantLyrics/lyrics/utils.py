@@ -33,11 +33,16 @@ def get_lyrics(query):
     finders = [
                   LocalLyricsFetcher(LOCAL_LYRICS_FOLDER)  # local
               ] + GENIUS_FINDERS + METROLYRICS_FINDERS + LYRICSTRANSLATE_FINDERS
-
+    #finders = [LocalLyricsFetcher(LOCAL_LYRICS_FOLDER)]
     for finder in finders:
-        result = finder.get_lyrics(query)
-        if result is not None:
+        try:
+            result, source = finder.get_lyrics(query)
+            print(source)
+            #if result is not None:
             save_lyrics(query, result)  # save to local
-            return result
+            return result, source
+        except:
+            # nothing
+            pass
 
     return None

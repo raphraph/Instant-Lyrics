@@ -41,7 +41,7 @@ class InternetLyricsFetcher(LyricsFetcher):
             if len(parsed) < 20:  # too little to be lyrics
                 return None
 
-            return parsed
+            return parsed, self.url[8:]
         except:
             return None
 

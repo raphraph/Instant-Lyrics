@@ -40,6 +40,6 @@ class LocalLyricsFetcher(LyricsFetcher):
         lyrics_file = get_local_lyrics_filename(query, self.search_folder)
         if lyrics_file in available_lyrics:
             with open(lyrics_file, "r") as reader:
-                return "".join(reader.readlines())  # content
+                return "".join(reader.readlines()), "Local folder"  # content
 
         return None
