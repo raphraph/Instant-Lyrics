@@ -37,8 +37,6 @@ def get_lyrics(query):
     for finder in finders:
         try:
             result, source = finder.get_lyrics(query)
-            print(source)
-            #if result is not None:
             save_lyrics(query, result)  # save to local
             return result, source
         except:
